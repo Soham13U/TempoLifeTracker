@@ -7,7 +7,15 @@ type Props = {
   children: ReactNode;
 };
 
-function GridPattern({ width, height }: { width: number; height: number }) {
+function GridPattern({
+  width,
+  height,
+  stroke,
+}: {
+  width: number;
+  height: number;
+  stroke: string;
+}) {
   if (width <= 0 || height <= 0) return null;
 
   return (
@@ -19,8 +27,8 @@ function GridPattern({ width, height }: { width: number; height: number }) {
     >
       <Defs>
         <Pattern id="grid" width={24} height={24} patternUnits="userSpaceOnUse">
-          <Line x1={24} y1={0} x2={24} y2={24} stroke="#4ADE80" strokeWidth={0.5} opacity={0.06} />
-          <Line x1={0} y1={24} x2={24} y2={24} stroke="#4ADE80" strokeWidth={0.5} opacity={0.06} />
+          <Line x1={24} y1={0} x2={24} y2={24} stroke={stroke} strokeWidth={0.5} opacity={0.04} />
+          <Line x1={0} y1={24} x2={24} y2={24} stroke={stroke} strokeWidth={0.5} opacity={0.04} />
         </Pattern>
       </Defs>
       <Rect width={width} height={height} fill="url(#grid)" />
@@ -50,7 +58,11 @@ export function TerminalBackdrop({ children }: Props) {
       style={{ flex: 1, backgroundColor: colors.background }}
       onLayout={onLayout}
     >
-      <GridPattern width={size.width} height={size.height} />
+      <GridPattern
+        width={size.width}
+        height={size.height}
+        stroke={colors.border}
+      />
       {children}
     </View>
   );

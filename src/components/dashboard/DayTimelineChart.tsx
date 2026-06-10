@@ -1,11 +1,10 @@
-import { terminalBlockEnter } from '@/motion/terminalChart';
+import { chartEnter } from '@/motion/chartMotion';
 import { TerminalPanel } from '@/components/terminal/TerminalPanel';
 import { tempoTokens } from '@/theme/tokens';
 import type { TimelineItem } from '@/types/dashboard';
 import { getCategoryColor } from '@/utils/colors';
-import { getDayBounds } from '@/utils/date';
+import { getDayBounds, formatTime } from '@/utils/date';
 import { formatDurationHuman } from '@/utils/duration';
-import { formatTime } from '@/utils/date';
 import {
   assignLanes,
   clipTimelineItemToDay,
@@ -20,11 +19,12 @@ import Svg, { Line, Rect } from 'react-native-svg';
 import { YStack } from '@/components/ui/stacks';
 
 const HOUR_LABELS = [0, 6, 12, 18];
-const TICK_HOURS = [0, 6, 12, 18, 24];
+const TICK_HOURS = [0, 12, 24];
 const MIN_BLOCK_PX = 2;
-const LANE_HEIGHT = 12;
-const LANE_GAP = 2;
+const LANE_HEIGHT = 14;
+const LANE_GAP = 4;
 const LABEL_HEIGHT = 14;
+const BLOCK_RADIUS = tempoTokens.chart.radius;
 
 type Props = {
   items: TimelineItem[];
@@ -69,18 +69,18 @@ export function DayTimelineChart({ items, date }: Props) {
   const msToWidth = (startMs: number, endMs: number) =>
     Math.max(MIN_BLOCK_PX, msToX(endMs) - msToX(startMs));
 
-  const tickOpacity = colors.isDark ? 0.5 : 0.25;
-  const gridOpacity = colors.isDark ? 0.04 : 0.06;
+  const tickOpacity = colors.isDark ? 0.2 : 0.15;
+  const gridOpacity = colors.isDark ? 0.03 : 0.05;
 
   return (
-    <YStack
-      gap="$2"
-      onLayout={(e: LayoutChangeEvent) =>
-        setWidth(e.nativeEvent.layout.width)
-      }
-    >
-      <HourLabels width={width} dayStart={dayStart} dayMs={dayMs} colors={colors} />
-      <TerminalPanel padded={false}>
+    <TerminalPanel>
+      <YStack
+        gap="$2"
+        onLayout={(e: LayoutChangeEvent) =>
+          setWidth(e.nativeEvent.layout.width)
+        }
+      >
+        <HourLabels width={width} dayStart={dayStart} dayMs={dayMs} colors={colors} />
         <View style={{ height: chartHeight, position: 'relative' }}>
           {width > 0 ? (
             <Svg width={width} height={chartHeight}>
@@ -126,12 +126,10 @@ export function DayTimelineChart({ items, date }: Props) {
                     y={y}
                     width={w}
                     height={LANE_HEIGHT}
-                    rx={0}
+                    rx={BLOCK_RADIUS}
+                    ry={BLOCK_RADIUS}
                     fill={block.color}
-                    fillOpacity={0.85}
-                    stroke={colors.isDark ? colors.phosphor : 'transparent'}
-                    strokeWidth={colors.isDark ? 1 : 0}
-                    strokeOpacity={0.6}
+                    fillOpacity={0.9}
                   />
                 );
               })}
@@ -146,7 +144,7 @@ export function DayTimelineChart({ items, date }: Props) {
                 return (
                   <Animated.View
                     key={`tap-${block.sessionId}`}
-                    entering={terminalBlockEnter(index)}
+                    entering={chartEnter(index)}
                     style={{
                       position: 'absolute',
                       left: x,
@@ -158,7 +156,9 @@ export function DayTimelineChart({ items, date }: Props) {
                     <Pressable
                       accessibilityRole="button"
                       accessibilityLabel={label}
-                      onPress={() => router.push(`/session/${block.sessionId}`)}
+                      onPress={() =>
+                        router.push(`/session/view/${block.sessionId}`)
+                      }
                       style={{ flex: 1 }}
                     />
                   </Animated.View>
@@ -166,8 +166,8 @@ export function DayTimelineChart({ items, date }: Props) {
               })
             : null}
         </View>
-      </TerminalPanel>
-    </YStack>
+      </YStack>
+    </TerminalPanel>
   );
 }
 
@@ -199,8 +199,7 @@ function HourLabels({
               position: 'absolute',
               left: Math.max(0, left - 8),
               fontSize: 10,
-              color: colors.phosphor,
-              opacity: 0.7,
+              color: colors.textMuted,
               fontFamily: tempoTokens.font.mono,
             }}
           >

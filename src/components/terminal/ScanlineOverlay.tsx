@@ -34,7 +34,7 @@ export function ScanlineOverlay() {
   return (
     <Animated.View
       pointerEvents="none"
-      style={[StyleSheet.absoluteFill, animStyle, { opacity: 0.03 }]}
+      style={[StyleSheet.absoluteFill, animStyle, { opacity: 0.015 }]}
     >
       {Array.from({ length: 120 }).map((_, i) => (
         <View
@@ -42,7 +42,7 @@ export function ScanlineOverlay() {
           style={{
             height: 1,
             marginBottom: LINE_GAP - 1,
-            backgroundColor: colors.phosphor,
+            backgroundColor: colors.cyan,
           }}
         />
       ))}

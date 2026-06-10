@@ -41,26 +41,37 @@ export default function ActivitiesScreen() {
           if (items.length === 0) return null;
 
           return (
-            <YStack key={category} gap="$2">
+            <YStack key={category} gap="$3">
               <SectionHeader title={CATEGORY_LABELS[category]} />
-              {items.map((activity) => {
-                const Icon = getActivityIcon(activity.icon);
-                const color = activity.color ?? getCategoryColor(category);
-                return (
-                  <AppCard
-                    key={activity.id}
-                    pressable
-                    onPress={() => router.push(`/activity/${activity.id}`)}
-                  >
-                    <XStack ai="center" gap="$3" minHeight={24}>
-                      <Icon size={20} color={color} />
-                      <AppText variant="body" f={1} numberOfLines={1}>
-                        {activity.name}
-                      </AppText>
-                    </XStack>
-                  </AppCard>
-                );
-              })}
+              <YStack gap="$2.5">
+                {items.map((activity) => {
+                  const Icon = getActivityIcon(activity.icon);
+                  const color = activity.color ?? getCategoryColor(category);
+                  return (
+                    <AppCard
+                      key={activity.id}
+                      pressable
+                      onPress={() => router.push(`/activity/${activity.id}`)}
+                    >
+                      <XStack ai="center" gap="$3" minHeight={24}>
+                        <YStack w={24} ai="center" jc="center" flexShrink={0}>
+                          <Icon size={20} color={color} />
+                        </YStack>
+                        <AppText
+                          variant="caption"
+                          color="$color"
+                          f={1}
+                          numberOfLines={1}
+                          fontSize={14}
+                          lineHeight={18}
+                        >
+                          {activity.name}
+                        </AppText>
+                      </XStack>
+                    </AppCard>
+                  );
+                })}
+              </YStack>
             </YStack>
           );
         })

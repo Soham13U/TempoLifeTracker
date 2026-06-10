@@ -5,6 +5,7 @@ node_modules/
 
 # Expo
 .expo/
+.expo-shared/
 dist/
 dist-web/
 web-build/
@@ -13,14 +14,28 @@ expo-env.d.ts
 # Tamagui
 .tamagui/
 
-# Native
+# Native / mobile signing (never commit secrets)
 .kotlin/
 *.orig.*
 *.jks
+*.keystore
 *.p8
 *.p12
 *.key
 *.mobileprovision
+*.pem
+local.properties
+
+# generated native folders (use `npx expo prebuild` locally)
+/ios
+/android
+
+# EAS (Expo Application Services)
+.eas/
+credentials.json
+*.apk
+*.aab
+*.ipa
 
 # Metro
 .metro-health-check*
@@ -29,37 +44,54 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+pnpm-debug.log*
 *.log
+
+# test coverage
+coverage/
+*.lcov
+.nyc_output
+
+# typescript
+*.tsbuildinfo
+
+# local env files (keep .env.example if you add one)
+.env
+.env.*
+!.env.example
+
+# caches & temp
+.cache/
+.turbo/
+tmp/
+temp/
 
 # macOS
 .DS_Store
-*.pem
 
 # Windows
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# local env files
-.env
-.env.*
-!.env.example
-
-# typescript
-*.tsbuildinfo
-
-# test coverage
-coverage/
+# Linux
+*~
 
 # IDE / editor (machine-specific)
 .idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.cursor/
 .claude/
 *.swp
-*~
+*.sublime-*
 
-# generated native folders
-/ios
-/android
+# Xcode (if ios/ is generated locally)
+xcuserdata/
+*.xcuserstate
+*.xcworkspace
+!default.xcworkspace
 
-# EAS (Expo Application Services) local state
-.eas/
+# Android (if android/ is generated locally)
+*.hprof

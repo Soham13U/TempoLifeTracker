@@ -7,15 +7,15 @@ module.exports = {
     extend: {
       colors: {
         terminal: {
-          bg: '#08080A',
-          card: '#101014',
-          border: '#2A2A32',
+          bg: '#0C0C0E',
+          card: '#141416',
+          border: '#2E2E32',
         },
         phosphor: {
-          DEFAULT: '#4ADE80',
-          light: '#16A34A',
+          DEFAULT: '#C9A86C',
+          light: '#A16207',
         },
-        'terminal-cyan': '#22D3EE',
+        'terminal-cyan': '#A8A29E',
       },
       borderRadius: {
         terminal: '6px',

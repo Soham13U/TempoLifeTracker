@@ -64,6 +64,7 @@ export default function DashboardScreen() {
             sessions={sessions}
             activities={activities}
             totalMs={totalMs}
+            selectedDate={selectedDate}
             activeState={activeState}
           />
         </>

@@ -1,4 +1,4 @@
-import { TerminalMeter } from '@/components/terminal/TerminalMeter';
+import { BarTrack } from '@/components/charts/BarTrack';
 
 type Props = {
   ratio: number;
@@ -7,5 +7,5 @@ type Props = {
 };
 
 export function AnimatedBar({ ratio, color, delayIndex }: Props) {
-  return <TerminalMeter ratio={ratio} color={color} delayIndex={delayIndex} />;
+  return <BarTrack ratio={ratio} color={color} delayIndex={delayIndex} />;
 }

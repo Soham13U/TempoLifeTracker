@@ -23,8 +23,8 @@ export function GlowFrame({ children, active = true }: Props) {
         borderColor: colors.phosphor,
         shadowColor: colors.phosphor,
         shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.45,
-        shadowRadius: 12,
+        shadowOpacity: 0.28,
+        shadowRadius: 10,
         elevation: 8,
       }}
     >

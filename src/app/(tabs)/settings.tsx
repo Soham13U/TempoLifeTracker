@@ -1,28 +1,28 @@
-import { AppButton } from '@/components/ui/AppButton';
-import { AppText } from '@/components/ui/AppText';
-import { Screen } from '@/components/ui/Screen';
-import { SectionHeader } from '@/components/ui/SectionHeader';
-import { useThemePreference } from '@/contexts/ThemeContext';
-import { resetDatabase } from '@/db/database';
+import { AppButton } from "@/components/ui/AppButton";
+import { AppCard } from "@/components/ui/AppCard";
+import { AppText } from "@/components/ui/AppText";
+import { Screen } from "@/components/ui/Screen";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { XStack, YStack } from "@/components/ui/stacks";
+import { useThemePreference } from "@/contexts/ThemeContext";
+import { resetDatabase } from "@/db/database";
 import {
   getNotificationsEnabled,
   setNotificationsEnabled,
-} from '@/db/settingsRepo';
-import type { ThemePreference } from '@/types/dashboard';
-import { useTimerStore } from '@/store/timerStore';
-import { exportCsv, exportJson } from '@/utils/export';
+} from "@/db/settingsRepo";
 import {
   areNotificationsSupported,
   requestNotificationPermissions,
-} from '@/services/notifications';
-import { useThemeColors } from '@/utils/themeColors';
-import Constants from 'expo-constants';
-import { useEffect, useState } from 'react';
-import { Alert, Switch } from 'react-native';
-import { XStack, YStack } from '@/components/ui/stacks';
-import { AppCard } from '@/components/ui/AppCard';
+} from "@/services/notifications";
+import { useTimerStore } from "@/store/timerStore";
+import type { ThemePreference } from "@/types/dashboard";
+import { exportCsv, exportJson } from "@/utils/export";
+import { useThemeColors } from "@/utils/themeColors";
+import Constants from "expo-constants";
+import { useEffect, useState } from "react";
+import { Alert, Switch } from "react-native";
 
-const THEMES: ThemePreference[] = ['system', 'light', 'dark'];
+const THEMES: ThemePreference[] = ["system", "light", "dark"];
 
 export default function SettingsScreen() {
   const { preference, setPreference } = useThemePreference();
@@ -39,15 +39,18 @@ export default function SettingsScreen() {
   const toggleNotifications = async (value: boolean) => {
     if (value && !notificationsSupported) {
       Alert.alert(
-        'Not available in Expo Go',
-        'Timer notifications require a development build (npx expo run:android). The rest of Tempo works in Expo Go.'
+        "Not available in Expo Go",
+        "Timer notifications require a development build (npx expo run:android). The rest of Tempo works in Expo Go.",
       );
       return;
     }
     if (value) {
       const ok = await requestNotificationPermissions();
       if (!ok) {
-        Alert.alert('Permission needed', 'Enable notifications in system settings.');
+        Alert.alert(
+          "Permission needed",
+          "Enable notifications in system settings.",
+        );
         return;
       }
     }
@@ -57,21 +60,21 @@ export default function SettingsScreen() {
 
   const handleReset = () => {
     Alert.alert(
-      'Reset demo data',
-      'This clears all sessions and restores default activities.',
+      "Reset demo data",
+      "This clears all sessions and restores default activities.",
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: "Cancel", style: "cancel" },
         {
-          text: 'Reset',
-          style: 'destructive',
+          text: "Reset",
+          style: "destructive",
           onPress: async () => {
             await useTimerStore.getState().stopTimer();
             await resetDatabase();
             await loadActiveSession();
-            Alert.alert('Done', 'Data has been reset.');
+            Alert.alert("Done", "Data has been reset.");
           },
         },
-      ]
+      ],
     );
   };
 
@@ -86,7 +89,7 @@ export default function SettingsScreen() {
             <AppButton
               key={t}
               size="sm"
-              variant={preference === t ? 'primary' : 'secondary'}
+              variant={preference === t ? "primary" : "secondary"}
               onPress={() => setPreference(t)}
             >
               {t}
@@ -101,8 +104,8 @@ export default function SettingsScreen() {
             <AppText variant="body">Active timer notification</AppText>
             <AppText variant="caption">
               {notificationsSupported
-                ? 'Reminder while a timer is running'
-                : 'Requires a dev build — unavailable in Expo Go'}
+                ? "Reminder while a timer is running"
+                : "Requires a dev build — unavailable in Expo Go"}
             </AppText>
           </YStack>
           <Switch
@@ -135,7 +138,7 @@ export default function SettingsScreen() {
             A calm, manual daily life tracker. Your data stays on this device.
           </AppText>
           <AppText variant="caption">
-            Version {Constants.expoConfig?.version ?? '1.0.0'}
+            Version {Constants.expoConfig?.version ?? "1.0.0"}
           </AppText>
         </YStack>
       </AppCard>

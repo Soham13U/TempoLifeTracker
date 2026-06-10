@@ -100,9 +100,9 @@ export function ActiveTimerCard() {
           </XStack>
           <AppButton
             variant="ghost"
-            onPress={() => router.push(`/session/${activeSession.id}`)}
+            onPress={() => router.push(`/session/view/${activeSession.id}`)}
           >
-            Add note
+            {activeSession.note ? 'View note' : 'Add note'}
           </AppButton>
         </YStack>
       </TerminalPanel>

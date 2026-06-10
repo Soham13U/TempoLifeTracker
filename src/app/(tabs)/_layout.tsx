@@ -17,7 +17,7 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontFamily: tempoTokens.font.mono,
           fontSize: 11,
-          letterSpacing: 0.5,
+          letterSpacing: 0.25,
         },
         tabBarStyle: {
           backgroundColor: colors.card,

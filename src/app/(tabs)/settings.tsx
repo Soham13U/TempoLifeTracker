@@ -1,0 +1,144 @@
+import { AppButton } from '@/components/ui/AppButton';
+import { AppText } from '@/components/ui/AppText';
+import { Screen } from '@/components/ui/Screen';
+import { SectionHeader } from '@/components/ui/SectionHeader';
+import { useThemePreference } from '@/contexts/ThemeContext';
+import { resetDatabase } from '@/db/database';
+import {
+  getNotificationsEnabled,
+  setNotificationsEnabled,
+} from '@/db/settingsRepo';
+import type { ThemePreference } from '@/types/dashboard';
+import { useTimerStore } from '@/store/timerStore';
+import { exportCsv, exportJson } from '@/utils/export';
+import {
+  areNotificationsSupported,
+  requestNotificationPermissions,
+} from '@/services/notifications';
+import { useThemeColors } from '@/utils/themeColors';
+import Constants from 'expo-constants';
+import { useEffect, useState } from 'react';
+import { Alert, Switch } from 'react-native';
+import { XStack, YStack } from '@/components/ui/stacks';
+import { AppCard } from '@/components/ui/AppCard';
+
+const THEMES: ThemePreference[] = ['system', 'light', 'dark'];
+
+export default function SettingsScreen() {
+  const { preference, setPreference } = useThemePreference();
+  const colors = useThemeColors();
+  const [notifications, setNotifications] = useState(true);
+  const loadActiveSession = useTimerStore((s) => s.loadActiveSession);
+
+  useEffect(() => {
+    getNotificationsEnabled().then(setNotifications);
+  }, []);
+
+  const notificationsSupported = areNotificationsSupported();
+
+  const toggleNotifications = async (value: boolean) => {
+    if (value && !notificationsSupported) {
+      Alert.alert(
+        'Not available in Expo Go',
+        'Timer notifications require a development build (npx expo run:android). The rest of Tempo works in Expo Go.'
+      );
+      return;
+    }
+    if (value) {
+      const ok = await requestNotificationPermissions();
+      if (!ok) {
+        Alert.alert('Permission needed', 'Enable notifications in system settings.');
+        return;
+      }
+    }
+    await setNotificationsEnabled(value);
+    setNotifications(value);
+  };
+
+  const handleReset = () => {
+    Alert.alert(
+      'Reset demo data',
+      'This clears all sessions and restores default activities.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: async () => {
+            await useTimerStore.getState().stopTimer();
+            await resetDatabase();
+            await loadActiveSession();
+            Alert.alert('Done', 'Data has been reset.');
+          },
+        },
+      ]
+    );
+  };
+
+  return (
+    <Screen>
+      <AppText variant="title">Settings</AppText>
+
+      <YStack gap="$2">
+        <SectionHeader title="Theme" />
+        <XStack gap="$2" flexWrap="wrap">
+          {THEMES.map((t) => (
+            <AppButton
+              key={t}
+              size="sm"
+              variant={preference === t ? 'primary' : 'secondary'}
+              onPress={() => setPreference(t)}
+            >
+              {t}
+            </AppButton>
+          ))}
+        </XStack>
+      </YStack>
+
+      <AppCard>
+        <XStack jc="space-between" ai="center" gap="$3">
+          <YStack flex={1} gap="$1">
+            <AppText variant="body">Active timer notification</AppText>
+            <AppText variant="caption">
+              {notificationsSupported
+                ? 'Reminder while a timer is running'
+                : 'Requires a dev build — unavailable in Expo Go'}
+            </AppText>
+          </YStack>
+          <Switch
+            value={notifications}
+            onValueChange={toggleNotifications}
+            trackColor={{ false: colors.border, true: colors.primary }}
+            thumbColor="#FFFFFF"
+          />
+        </XStack>
+      </AppCard>
+
+      <YStack gap="$2">
+        <SectionHeader title="Export" />
+        <AppButton variant="secondary" onPress={() => exportJson()}>
+          Export JSON
+        </AppButton>
+        <AppButton variant="secondary" onPress={() => exportCsv()}>
+          Export CSV
+        </AppButton>
+      </YStack>
+
+      <AppButton variant="danger" onPress={handleReset}>
+        Reset demo data
+      </AppButton>
+
+      <AppCard>
+        <YStack gap="$2">
+          <AppText variant="subtitle">About Tempo</AppText>
+          <AppText variant="caption">
+            A calm, manual daily life tracker. Your data stays on this device.
+          </AppText>
+          <AppText variant="caption">
+            Version {Constants.expoConfig?.version ?? '1.0.0'}
+          </AppText>
+        </YStack>
+      </AppCard>
+    </Screen>
+  );
+}

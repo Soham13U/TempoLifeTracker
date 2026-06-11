@@ -1,8 +1,10 @@
 import {
+  getColorScheme,
   getThemePreference,
+  setColorScheme as persistColorScheme,
   setThemePreference,
 } from '@/db/settingsRepo';
-import type { ThemePreference } from '@/types/dashboard';
+import type { ColorScheme, ThemePreference } from '@/types/dashboard';
 import React, {
   createContext,
   useCallback,
@@ -15,8 +17,10 @@ import { useColorScheme as useSystemScheme } from 'react-native';
 
 type ThemeContextValue = {
   preference: ThemePreference;
+  colorScheme: ColorScheme;
   resolvedTheme: 'light' | 'dark';
   setPreference: (p: ThemePreference) => Promise<void>;
+  setColorScheme: (s: ColorScheme) => Promise<void>;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -27,10 +31,16 @@ export function ThemePreferenceProvider({
   children: React.ReactNode;
 }) {
   const system = useSystemScheme();
-  const [preference, setPref] = useState<ThemePreference>('dark');
+  const [preference, setPref] = useState<ThemePreference>('system');
+  const [colorScheme, setScheme] = useState<ColorScheme>('phosphor');
 
   useEffect(() => {
-    getThemePreference().then(setPref);
+    Promise.all([getThemePreference(), getColorScheme()]).then(
+      ([theme, scheme]) => {
+        setPref(theme);
+        setScheme(scheme);
+      }
+    );
   }, []);
 
   const resolvedTheme: 'light' | 'dark' =
@@ -45,9 +55,20 @@ export function ThemePreferenceProvider({
     setPref(p);
   }, []);
 
+  const setColorScheme = useCallback(async (s: ColorScheme) => {
+    await persistColorScheme(s);
+    setScheme(s);
+  }, []);
+
   const value = useMemo(
-    () => ({ preference, resolvedTheme, setPreference }),
-    [preference, resolvedTheme, setPreference]
+    () => ({
+      preference,
+      colorScheme,
+      resolvedTheme,
+      setPreference,
+      setColorScheme,
+    }),
+    [preference, colorScheme, resolvedTheme, setPreference, setColorScheme]
   );
 
   return (

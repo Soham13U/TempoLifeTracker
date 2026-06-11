@@ -12,7 +12,7 @@ export default function TabLayout() {
         headerShown: false,
         animation: 'shift',
         tabBarActiveTintColor: colors.phosphor,
-        tabBarInactiveTintColor: '#71717A',
+        tabBarInactiveTintColor: colors.textMuted,
         sceneStyle: { backgroundColor: colors.background },
         tabBarLabelStyle: {
           fontFamily: tempoTokens.font.mono,

@@ -2,17 +2,21 @@ import { SPRING_QUICK } from '@/motion/constants';
 import { tempoTokens } from '@/theme/tokens';
 import { getCategoryColor } from '@/utils/colors';
 import { getActivityIcon } from '@/utils/icons';
+import { useThemeColors } from '@/utils/themeColors';
 import type { Activity } from '@/types/activity';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { Pressable } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { YStack } from '@/components/ui/stacks';
 import { AppText } from '../ui/AppText';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+const ICON_CONTAINER = 28;
+const DOT_SIZE = 8;
 
 type Props = {
   activity: Activity;
@@ -27,9 +31,11 @@ export function QuickActivityButton({
   isActive,
   fill = true,
 }: Props) {
+  const colors = useThemeColors();
   const scale = useSharedValue(1);
   const Icon = getActivityIcon(activity.icon);
-  const color = activity.color ?? getCategoryColor(activity.category);
+  const categoryColor =
+    activity.color ?? getCategoryColor(activity.category);
 
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -56,11 +62,31 @@ export function QuickActivityButton({
         ai="center"
         gap="$2"
         borderWidth={isActive ? 2 : 1}
-        transition="quick"
-        style={isActive ? { borderColor: color } : undefined}
-        borderColor={isActive ? undefined : '$borderColor'}
+        borderColor={isActive ? colors.phosphor : '$borderColor'}
       >
-        <Icon size={22} color={color} />
+        <View
+          style={{
+            width: ICON_CONTAINER,
+            height: ICON_CONTAINER,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Icon size={22} color={colors.icon} />
+          <View
+            style={{
+              position: 'absolute',
+              right: 0,
+              bottom: 0,
+              width: DOT_SIZE,
+              height: DOT_SIZE,
+              borderRadius: DOT_SIZE / 2,
+              backgroundColor: categoryColor,
+              borderWidth: 1,
+              borderColor: colors.card,
+            }}
+          />
+        </View>
         <AppText variant="caption" numberOfLines={1} color="$color">
           {activity.name}
         </AppText>

@@ -1,6 +1,7 @@
 import type { ActiveTimerState } from '@/types/session';
 import { EMPTY_ACTIVE_TIMER } from '@/types/session';
-import type { ThemePreference } from '@/types/dashboard';
+import type { ColorScheme, ThemePreference } from '@/types/dashboard';
+import { COLOR_SCHEMES } from '@/theme/palettes';
 import { getDatabase } from './database';
 
 async function getSetting(key: string): Promise<string | null> {
@@ -57,6 +58,28 @@ export async function getThemePreference(): Promise<ThemePreference> {
 
 export async function setThemePreference(theme: ThemePreference): Promise<void> {
   await setSetting('theme', theme);
+}
+
+const LEGACY_COLOR_SCHEME_MAP = {
+  sage: 'stone',
+  ocean: 'slate',
+  clay: 'copper',
+} as const;
+
+export async function getColorScheme(): Promise<ColorScheme> {
+  const v = await getSetting('color_scheme');
+  if (!v) return 'phosphor';
+  if (v in LEGACY_COLOR_SCHEME_MAP) {
+    return LEGACY_COLOR_SCHEME_MAP[v as keyof typeof LEGACY_COLOR_SCHEME_MAP];
+  }
+  if (COLOR_SCHEMES.includes(v as ColorScheme)) {
+    return v as ColorScheme;
+  }
+  return 'phosphor';
+}
+
+export async function setColorScheme(scheme: ColorScheme): Promise<void> {
+  await setSetting('color_scheme', scheme);
 }
 
 export async function getNotificationsEnabled(): Promise<boolean> {

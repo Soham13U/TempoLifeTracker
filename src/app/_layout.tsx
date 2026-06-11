@@ -3,7 +3,9 @@ import '../../global.css';
 import { ThemePreferenceProvider, useThemePreference } from '@/contexts/ThemeContext';
 import { getDatabase } from '@/db/database';
 import config from '@/theme/tamagui.config';
+import { getTamaguiThemeName } from '@/theme/palettes';
 import { tempoTokens } from '@/theme/tokens';
+import { useThemeColors } from '@/utils/themeColors';
 import { useTimerStore } from '@/store/timerStore';
 import {
   Inter_400Regular,
@@ -26,7 +28,8 @@ export { ErrorBoundary } from 'expo-router';
 SplashScreen.preventAutoHideAsync();
 
 function RootInner() {
-  const { resolvedTheme } = useThemePreference();
+  const { resolvedTheme, colorScheme } = useThemePreference();
+  const colors = useThemeColors();
   const loadActiveSession = useTimerStore((s) => s.loadActiveSession);
   const [ready, setReady] = useState(false);
   const [fontsLoaded] = useFonts({
@@ -49,22 +52,27 @@ function RootInner() {
     })();
   }, [loadActiveSession, fontsLoaded]);
 
+  const backgroundColor = colors.background;
+  const headerTintColor = colors.phosphor;
+  const themeName = getTamaguiThemeName(resolvedTheme, colorScheme);
+
   if (!ready || !fontsLoaded) {
     return (
-      <YStack f={1} ai="center" jc="center" bg="$background">
-        <Spinner size="large" color={tempoTokens.color.phosphor} />
-        <AppText mt="$4" variant="caption">
-          Loading Tempo…
-        </AppText>
-      </YStack>
+      <Theme name={themeName}>
+        <YStack
+          f={1}
+          ai="center"
+          jc="center"
+          style={{ backgroundColor }}
+        >
+          <Spinner size="large" color={colors.phosphor} />
+          <AppText mt="$4" variant="caption">
+            Loading Tempo…
+          </AppText>
+        </YStack>
+      </Theme>
     );
   }
-
-  const isDark = resolvedTheme === 'dark';
-  const backgroundColor = isDark
-    ? tempoTokens.color.backgroundDark
-    : tempoTokens.color.backgroundLight;
-  const headerTintColor = isDark ? tempoTokens.color.phosphor : '#1A1A1E';
   const headerTitleStyle = {
     fontFamily: tempoTokens.font.monoSemiBold,
     fontSize: 14,
@@ -72,7 +80,7 @@ function RootInner() {
   };
 
   return (
-    <Theme name={resolvedTheme}>
+    <Theme name={themeName}>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -152,7 +160,7 @@ function RootInner() {
 
 export default function RootLayout() {
   return (
-    <TamaguiProvider config={config} defaultTheme="dark">
+    <TamaguiProvider config={config} defaultTheme="dark_phosphor">
       <ThemePreferenceProvider>
         <RootInner />
       </ThemePreferenceProvider>

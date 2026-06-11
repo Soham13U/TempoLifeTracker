@@ -33,6 +33,8 @@ export const tempoTokens = {
     listRow: 12,
     listIndent: 14,
     listSection: 14,
+    timelineItem: 18,
+    timelineNoteGap: 4,
     statRow: 6,
   },
   size: {

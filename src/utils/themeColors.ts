@@ -1,28 +1,25 @@
-import { useThemePreference } from '@/contexts/ThemeContext';
-import { tempoTokens } from '@/theme/tokens';
-
-export function useThemeColors() {
-  const { resolvedTheme } = useThemePreference();
-  const isDark = resolvedTheme === 'dark';
-
-  return {
-    primary: isDark ? tempoTokens.color.phosphor : tempoTokens.color.primaryLight,
-    phosphor: isDark ? tempoTokens.color.phosphor : tempoTokens.color.phosphorLight,
-    cyan: isDark ? tempoTokens.color.cyan : tempoTokens.color.cyanLight,
-    glow: isDark ? tempoTokens.color.glow : 'transparent',
-    background: isDark
-      ? tempoTokens.color.backgroundDark
-      : tempoTokens.color.backgroundLight,
-    card: isDark ? tempoTokens.color.cardDark : tempoTokens.color.cardLight,
-    text: isDark ? '#E4E4E7' : '#1A1A1E',
-    textMuted: isDark
-      ? tempoTokens.color.textMutedDark
-      : tempoTokens.color.textMuted,
-    border: isDark
-      ? tempoTokens.color.borderDark
-      : tempoTokens.color.borderLight,
-    icon: isDark ? '#E4E4E7' : '#1A1A1E',
-    danger: tempoTokens.color.danger,
-    isDark,
-  };
-}
+import { useThemePreference } from '@/contexts/ThemeContext';
+import { getPaletteTokens } from '@/theme/palettes';
+
+export function useThemeColors() {
+  const { resolvedTheme, colorScheme } = useThemePreference();
+  const isDark = resolvedTheme === 'dark';
+  const tokens = getPaletteTokens(colorScheme, resolvedTheme);
+
+  return {
+    primary: tokens.primary,
+    phosphor: tokens.phosphor,
+    cyan: tokens.accent,
+    glow: tokens.glow,
+    background: tokens.background,
+    card: tokens.card,
+    text: tokens.text,
+    textMuted: tokens.textMuted,
+    border: tokens.border,
+    icon: tokens.icon,
+    onPrimary: tokens.onPrimary,
+    danger: tokens.danger,
+    isDark,
+    colorScheme,
+  };
+}

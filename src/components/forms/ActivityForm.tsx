@@ -174,7 +174,7 @@ export function ActivityForm({
                         >
                           <I
                             size={22}
-                            color={selected ? '#FFFFFF' : colors.icon}
+                            color={selected ? colors.onPrimary : colors.icon}
                           />
                         </Pressable>
                       );

@@ -14,3 +14,5 @@ export type TimelineItem = {
 };
 
 export type ThemePreference = 'system' | 'light' | 'dark';
+
+export type ColorScheme = 'phosphor' | 'ink' | 'stone' | 'copper' | 'slate';

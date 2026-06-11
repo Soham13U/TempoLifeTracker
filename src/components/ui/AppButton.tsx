@@ -9,7 +9,7 @@ export type AppButtonSize = 'default' | 'sm';
 const TamaguiButton = Button as ComponentType<Record<string, unknown>>;
 
 const styles: Record<AppButtonVariant, Record<string, unknown>> = {
-  primary: { bg: '$primary', color: '#08080A', borderWidth: 0 },
+  primary: { bg: '$primary', color: '$onPrimary', borderWidth: 0 },
   secondary: { bg: '$card', color: '$color', borderWidth: 1, borderColor: '$borderColor' },
   ghost: { bg: 'transparent', color: '$color', borderWidth: 0 },
   danger: { bg: '$danger', color: 'white', borderWidth: 0 },

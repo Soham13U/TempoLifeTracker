@@ -1,8 +1,8 @@
 import { AppText } from '@/components/ui/AppText';
+import { XStack, YStack } from '@/components/ui/stacks';
 import { tempoTokens } from '@/theme/tokens';
 import { useThemeColors } from '@/utils/themeColors';
 import { Pressable } from 'react-native';
-import { XStack } from '@/components/ui/stacks';
 
 type Segment<T extends string> = {
   value: T;
@@ -27,6 +27,7 @@ export function SegmentedRow<T extends string>({
 
   return (
     <XStack
+      w="100%"
       borderWidth={1}
       borderColor={colors.border}
       br={radius}
@@ -44,23 +45,27 @@ export function SegmentedRow<T extends string>({
             onPress={() => onChange(segment.value)}
             style={({ pressed }) => ({
               flex: 1,
-              minHeight: tempoTokens.size.button,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: selected ? colors.phosphor : colors.card,
-              borderRightWidth: isLast ? 0 : 1,
-              borderRightColor: colors.border,
               opacity: pressed ? 0.85 : 1,
             })}
           >
-            <AppText
-              variant="caption"
-              fontFamily={tempoTokens.font.monoSemiBold}
-              fontSize={13}
-              color={selected ? colors.onPrimary : colors.text}
+            <YStack
+              f={1}
+              minHeight={tempoTokens.size.button}
+              jc="center"
+              ai="center"
+              bg={selected ? colors.phosphor : colors.card}
+              borderRightWidth={isLast ? 0 : 1}
+              borderRightColor={colors.border}
             >
-              {segment.label}
-            </AppText>
+              <AppText
+                variant="caption"
+                fontFamily={tempoTokens.font.monoSemiBold}
+                fontSize={13}
+                color={selected ? colors.onPrimary : colors.text}
+              >
+                {segment.label}
+              </AppText>
+            </YStack>
           </Pressable>
         );
       })}

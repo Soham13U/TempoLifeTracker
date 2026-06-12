@@ -1,18 +1,22 @@
+import {
+  ActivityIconMark,
+  CATEGORY_DOT_INSET,
+  CategoryDot,
+} from '@/components/activity/ActivityIconMark';
 import { AppButton } from '@/components/ui/AppButton';
+import { AppCard } from '@/components/ui/AppCard';
 import { AppText } from '@/components/ui/AppText';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Screen } from '@/components/ui/Screen';
 import { SectionHeader } from '@/components/ui/SectionHeader';
+import { XStack, YStack } from '@/components/ui/stacks';
 import { useActivityStore } from '@/store/activityStore';
 import { ACTIVITY_CATEGORIES } from '@/types/activity';
 import { CATEGORY_LABELS } from '@/utils/categories';
 import { getCategoryColor } from '@/utils/colors';
 import { getActivityIcon } from '@/utils/icons';
-import { useRouter } from 'expo-router';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
-import { YStack, XStack } from '@/components/ui/stacks';
-import { AppCard } from '@/components/ui/AppCard';
 
 export default function ActivitiesScreen() {
   const router = useRouter();
@@ -46,17 +50,24 @@ export default function ActivitiesScreen() {
               <YStack gap="$2.5">
                 {items.map((activity) => {
                   const Icon = getActivityIcon(activity.icon);
-                  const color = activity.color ?? getCategoryColor(category);
+                  const categoryColor =
+                    activity.color ?? getCategoryColor(category);
                   return (
                     <AppCard
                       key={activity.id}
                       pressable
                       onPress={() => router.push(`/activity/${activity.id}`)}
+                      position="relative"
                     >
+                      <CategoryDot
+                        color={categoryColor}
+                        style={{
+                          top: CATEGORY_DOT_INSET,
+                          left: CATEGORY_DOT_INSET,
+                        }}
+                      />
                       <XStack ai="center" gap="$3" minHeight={24}>
-                        <YStack w={24} ai="center" jc="center" flexShrink={0}>
-                          <Icon size={20} color={color} />
-                        </YStack>
+                        <ActivityIconMark icon={Icon} size={20} container={24} />
                         <AppText
                           variant="caption"
                           color="$color"

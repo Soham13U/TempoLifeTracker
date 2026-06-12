@@ -1,10 +1,10 @@
 import { AppText } from '@/components/ui/AppText';
+import { XStack, YStack } from '@/components/ui/stacks';
 import { palettes } from '@/theme/palettes';
 import { tempoTokens } from '@/theme/tokens';
 import type { ColorScheme } from '@/types/dashboard';
 import { useThemeColors } from '@/utils/themeColors';
 import { Pressable, View } from 'react-native';
-import { XStack, YStack } from '@/components/ui/stacks';
 
 const ROW1: ColorScheme[] = ['phosphor', 'ink', 'stone'];
 const ROW2: ColorScheme[] = ['copper', 'slate'];
@@ -41,16 +41,21 @@ function PaletteCell({
       style={({ pressed }) => ({
         flex: 1,
         opacity: pressed ? 0.85 : 1,
-        borderWidth: selected ? 2 : 1,
-        borderColor: selected ? colors.phosphor : colors.border,
-        borderRadius: radius,
-        backgroundColor: colors.card,
-        minHeight: 56,
-        paddingVertical: 10,
-        paddingHorizontal: 8,
       })}
     >
-      <YStack gap="$2" ai="center" jc="center" f={1}>
+      <YStack
+        f={1}
+        gap="$2"
+        ai="center"
+        jc="center"
+        minHeight={56}
+        py={10}
+        px={8}
+        borderWidth={selected ? 2 : 1}
+        borderColor={selected ? colors.phosphor : colors.border}
+        br={radius}
+        bg={colors.card}
+      >
         <XStack gap="$2" ai="center">
           <View
             style={{
@@ -68,6 +73,8 @@ function PaletteCell({
               height: 20,
               borderRadius: 10,
               backgroundColor: palette.phosphor,
+              borderWidth: 1,
+              borderColor: colors.border,
             }}
           />
         </XStack>
@@ -75,6 +82,7 @@ function PaletteCell({
           variant="caption"
           fontSize={11}
           fontFamily={tempoTokens.font.mono}
+          color={colors.text}
         >
           {palettes[scheme].name}
         </AppText>
@@ -85,8 +93,8 @@ function PaletteCell({
 
 export function PalettePicker({ value, resolvedTheme, onChange }: Props) {
   return (
-    <YStack gap="$2">
-      <XStack gap="$2">
+    <YStack gap="$2" w="100%">
+      <XStack gap="$2" w="100%">
         {ROW1.map((scheme) => (
           <PaletteCell
             key={scheme}
@@ -97,7 +105,7 @@ export function PalettePicker({ value, resolvedTheme, onChange }: Props) {
           />
         ))}
       </XStack>
-      <XStack gap="$2">
+      <XStack gap="$2" w="100%">
         <YStack f={1} />
         {ROW2.map((scheme) => (
           <PaletteCell
@@ -108,6 +116,7 @@ export function PalettePicker({ value, resolvedTheme, onChange }: Props) {
             onPress={() => onChange(scheme)}
           />
         ))}
+        <YStack f={1} />
       </XStack>
     </YStack>
   );

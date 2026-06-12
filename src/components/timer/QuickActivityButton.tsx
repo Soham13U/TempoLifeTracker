@@ -1,22 +1,24 @@
+import {
+  ActivityIconMark,
+  CATEGORY_DOT_INSET,
+  CategoryDot,
+} from '@/components/activity/ActivityIconMark';
+import { AppText } from '@/components/ui/AppText';
+import { YStack } from '@/components/ui/stacks';
 import { SPRING_QUICK } from '@/motion/constants';
 import { tempoTokens } from '@/theme/tokens';
+import type { Activity } from '@/types/activity';
 import { getCategoryColor } from '@/utils/colors';
 import { getActivityIcon } from '@/utils/icons';
 import { useThemeColors } from '@/utils/themeColors';
-import type { Activity } from '@/types/activity';
+import { Pressable } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { Pressable, View } from 'react-native';
-import { YStack } from '@/components/ui/stacks';
-import { AppText } from '../ui/AppText';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-const ICON_CONTAINER = 28;
-const DOT_SIZE = 8;
 
 type Props = {
   activity: Activity;
@@ -63,30 +65,13 @@ export function QuickActivityButton({
         gap="$2"
         borderWidth={isActive ? 2 : 1}
         borderColor={isActive ? colors.phosphor : '$borderColor'}
+        position="relative"
       >
-        <View
-          style={{
-            width: ICON_CONTAINER,
-            height: ICON_CONTAINER,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Icon size={22} color={colors.icon} />
-          <View
-            style={{
-              position: 'absolute',
-              right: 0,
-              bottom: 0,
-              width: DOT_SIZE,
-              height: DOT_SIZE,
-              borderRadius: DOT_SIZE / 2,
-              backgroundColor: categoryColor,
-              borderWidth: 1,
-              borderColor: colors.card,
-            }}
-          />
-        </View>
+        <CategoryDot
+          color={categoryColor}
+          style={{ top: CATEGORY_DOT_INSET, left: CATEGORY_DOT_INSET }}
+        />
+        <ActivityIconMark icon={Icon} />
         <AppText variant="caption" numberOfLines={1} color="$color">
           {activity.name}
         </AppText>
